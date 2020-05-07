@@ -20,7 +20,6 @@ export default function Index() {
                     backgroundColor="transparent"
                 />
                 <App />
-                <View />
             </PersistGate>
         </Provider>
     );

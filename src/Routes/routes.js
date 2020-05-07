@@ -1,34 +1,20 @@
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 
-import {
-    SignSwitchNavigator,
-    UserSwitchNavigator,
-    DirectorSwitchNavigator,
-} from './navigators';
+import SplashArt from '../pages/ReaderContainer/SplashArt';
+import Reader from '../pages/ReaderContainer/Reader';
 
-selectBottomMenu = (isSigned, personality) => {
-    if (isSigned && personality === 'director') {
-        return 'Director';
-    }
+import { transition } from './transitions';
 
-    if (isSigned) {
-        return 'User';
-    }
-
-    return 'Sign';
-};
-
-navigation = (isSigned, personality) =>
-    createSwitchNavigator(
+navigation = () =>
+    createAnimatedSwitchNavigator(
         {
-            Sign: SignSwitchNavigator,
-            User: UserSwitchNavigator,
-            Director: DirectorSwitchNavigator,
+            SplashArt,
+            Reader,
         },
         {
-            initialRouteName: selectBottomMenu(isSigned, personality),
+            transition: transition(),
         }
     );
 
-export default (isSigned = false, personality = 'user') =>
-    createAppContainer(navigation(isSigned, personality));
+export default () => createAppContainer(navigation());
