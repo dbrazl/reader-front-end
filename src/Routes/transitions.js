@@ -9,10 +9,7 @@ export function transition() {
                 durationMs={400}
                 interpolation="easeIn"
             />
-            <Transition.In
-                type="slide-bottom"
-                durationMs={400}
-            />
+            <Transition.In type="slide-bottom" durationMs={400} />
         </Transition.Together>
     );
 }

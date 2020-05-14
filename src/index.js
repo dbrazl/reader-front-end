@@ -16,7 +16,7 @@ export default function Index() {
             <PersistGate persistor={persistor}>
                 <StatusBar
                     translucent
-                    barStyle="light-content"
+                    barStyle="dark-content"
                     backgroundColor="transparent"
                 />
                 <App />

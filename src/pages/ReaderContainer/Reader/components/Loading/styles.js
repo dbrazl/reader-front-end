@@ -7,10 +7,9 @@ export const Container = styled.View`
     justify-content: center;
 `;
 
-export const Button = styled.TouchableOpacity``;
-
-export const TextButton = styled.Text`
-    font-family: 'Nunito-Regular';
-    font-size: 18px;
-    color: #000;
+export const Icon = styled.Image.attrs({
+    resizeMode: 'contain',
+})`
+    width: 80px;
+    height: 80px;
 `;
