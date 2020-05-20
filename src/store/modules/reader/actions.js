@@ -47,6 +47,19 @@ export function getCSSSuccess(css) {
     };
 }
 
+export function setHTMLPreparedRequest() {
+    return {
+        type: '@reader/SET_HTML_PREPARED_REQUEST',
+    }
+}
+
+export function setHTMLPreparedSuccess(html) {
+    return {
+        type: '@reader/SET_HTML_PREPARED_SUCCESS',
+        payload: { html }
+    }
+}
+
 export function openReaderFailure(errorMessage) {
     return {
         type: '@reader/OPEN_READER_FAILURE',

@@ -6,13 +6,13 @@ import { Container, Button, TextButton } from './styles';
 import Loading from './components/Loading';
 
 const View = ({ viewProps }) => {
-    const { uri, width, height, loading, onLoad } = viewProps;
+    const { html, width, height, loading, onLoad } = viewProps;
 
     return (
         <Container>
             {!loading && <Loading width={width} height={height} />}
             <WebView
-                source={{ uri }}
+                source={{ html }}
                 style={{ width, height }}
                 onLoad={onLoad}
             />

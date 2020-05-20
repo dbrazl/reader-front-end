@@ -12,6 +12,7 @@ const INITIAL_STATE = {
     content: {
         html: '',
         css: '',
+        htmlPrepared: '',
     },
     status: {
         loading: false,
@@ -45,8 +46,12 @@ export default function reader(state = INITIAL_STATE, action) {
             }
 
             case '@reader/GET_CSS_SUCCESS': {
-                draft.status.loading = false;
                 draft.content.css = action.payload.css;
+                break;
+            }
+
+            case '@reader/SET_HTML_PREPARED_SUCCESS': {
+                draft.content.htmlPrepared = action.payload.html;
                 break;
             }
 
