@@ -37,6 +37,7 @@ export function writeFile(log) {
 
     return new Promise((success, reject) => {
         fs.createFile(path, data, 'utf8');
+        success();
     });
 }
 
@@ -50,13 +51,15 @@ export function appendError(log, file) {
     const saveData = file.split(']')[0];
     const data = `${saveData},${string}]`;
 
-    fs.writeStream(path, 'utf8')
-        .then(stream => {
-            stream.write(data);
-            stream.close();
-            success();
-        })
-        .catch(error => {
-            success();
-        });
+    return new Promise((success, reject) => {
+        fs.writeStream(path, 'utf8')
+            .then(stream => {
+                stream.write(data);
+                stream.close();
+                success();
+            })
+            .catch(error => {
+                success();
+            });
+    });
 }

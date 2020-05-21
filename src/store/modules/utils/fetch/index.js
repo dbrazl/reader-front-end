@@ -24,6 +24,19 @@ function getFileType(url) {
     return url.slice(index + 1);
 }
 
+function blobError(url, http, message) {
+    return {
+        error: true,
+        http,
+        message,
+        config: {
+            url,
+            baseURL: null,
+            method: 'get',
+        },
+    };
+}
+
 export function download(url) {
     const ERROR_MESSAGES = {
         URL: 'BLOB: URL não é válida.',
@@ -33,11 +46,7 @@ export function download(url) {
     };
 
     return new Promise((success, reject) => {
-        if (!validURL(url))
-            reject({
-                error: true,
-                message: ERROR_MESSAGES.URL,
-            });
+        if (!validURL(url)) reject(blobError(url, null, ERROR_MESSAGES.URL));
 
         RNFetchBlob.fetch('GET', url).then(response => {
             const status = response.info().status;
@@ -46,11 +55,7 @@ export function download(url) {
                 success({
                     data: response.text(),
                 });
-            else
-                reject({
-                    error: true,
-                    message: ERROR_MESSAGES.DOWNLOAD,
-                });
+            else success(blobError(url, status, ERROR_MESSAGES.DOWNLOAD));
         });
     });
 }
@@ -70,8 +75,9 @@ export function errorMessage(error) {
     const message = error.message;
 
     const ERROR_MESSAGES = {
-        500: 'Não foi possível conectar com o servidor.',
-        400: 'A busca da página não foi autorizada',
+        500: 'Não foi possível conectar com o servidor',
+        400: 'Erro ao requsitar a página',
+        401: 'A busca da página não foi autorizada',
         404: 'A página não foi encontrada',
         BLOB: message.split('BLOB: ')[1],
     };
@@ -79,6 +85,8 @@ export function errorMessage(error) {
     if (message.includes('500')) return ERROR_MESSAGES[500];
 
     if (message.includes('400')) return ERROR_MESSAGES[400];
+
+    if (message.includes('401')) return ERROR_MESSAGES[401];
 
     if (message.includes('404')) return ERROR_MESSAGES[404];
 
@@ -90,12 +98,15 @@ export function errorMessage(error) {
 export function* createReport(error, errorMessage) {
     const message = errorMessage || errorMessage(error);
 
-    const { url, method, baseURL } = error.config;
+    const { http, config } = error;
+    const { url, method, baseURL } = config;
+
+    const endpoint = baseURL ? url.split(baseURL)[1] : url;
 
     const report = {
-        http: getHttp(error),
+        http: http ? http : getHttp(error),
         description: message,
-        endpoint: url.split(baseURL)[1],
+        endpoint,
         method,
     };
 

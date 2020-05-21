@@ -6,3 +6,9 @@ export const Container = styled.View`
     align-items: center;
     justify-content: center;
 `;
+
+export const Book = styled.FlatList.attrs({
+    showsHorizontalScrollIndicator: false,
+})`
+    flex: 1;
+`;

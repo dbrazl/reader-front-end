@@ -11,7 +11,7 @@ import {
     getCSSRequest,
     getHTMLSuccess,
     getCSSSuccess,
-    setHTMLPreparedSuccess,
+    setPagesSuccess,
     openReaderFailure,
     openReaderSuccess,
 } from './actions';
@@ -24,12 +24,13 @@ import {
 } from '../utils/inject';
 
 export function* openReaderStart({ payload }) {
-    const { publicationId, page } = payload;
-    yield put(getPageRequest(publicationId, page));
+    const { page } = payload;
+    yield put(getPageRequest(page));
 }
 
 export function* getPage({ payload }) {
-    const { publicationId, page } = payload;
+    const { page } = payload;
+    const { publicationId } = yield select(state => state.reader.book);
 
     try {
         const response = yield call(
@@ -55,7 +56,7 @@ export function* getHTML({ payload }) {
     try {
         const response = yield call(download, url);
 
-        if (response.error) throw new Error(response);
+        if (response.error) throw response;
         yield put(getHTMLSuccess(response.data));
     } catch (error) {
         yield* errorHandler(error);
@@ -71,7 +72,7 @@ export function* getCSS({ payload }) {
 
         if (response.error) {
             yield put(getCSSSuccess(cssDefault));
-            throw new Error(response);
+            throw response;
         }
 
         yield put(getCSSSuccess(response.data));
@@ -102,7 +103,7 @@ export function* setHTMLPrepared() {
             htmlPrepared = addStyleToDocument(html, css);
         }
 
-        yield put(setHTMLPreparedSuccess(htmlPrepared));
+        yield put(setPagesSuccess(htmlPrepared));
     }
 }
 
@@ -127,5 +128,5 @@ export default all([
     takeLatest('@reader/GET_CSS_REQUEST', getCSS),
     takeLatest('@reader/GET_HTML_SUCCESS', setHTMLPrepared),
     takeLatest('@reader/GET_CSS_SUCCESS', setHTMLPrepared),
-    takeLatest('@reader/SET_HTML_PREPARED_SUCCESS', openReaderEnd),
+    takeLatest('@reader/SET_PAGES_SUCCESS', openReaderEnd),
 ]);

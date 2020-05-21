@@ -5,10 +5,10 @@ export function openReaderRequest(publicationId, page) {
     };
 }
 
-export function getPageRequest(publicationId, page) {
+export function getPageRequest(page) {
     return {
         type: '@reader/GET_PAGE_REQUEST',
-        payload: { publicationId, page },
+        payload: { page },
     };
 }
 
@@ -47,15 +47,9 @@ export function getCSSSuccess(css) {
     };
 }
 
-export function setHTMLPreparedRequest() {
+export function setPagesSuccess(html) {
     return {
-        type: '@reader/SET_HTML_PREPARED_REQUEST',
-    };
-}
-
-export function setHTMLPreparedSuccess(html) {
-    return {
-        type: '@reader/SET_HTML_PREPARED_SUCCESS',
+        type: '@reader/SET_PAGES_SUCCESS',
         payload: { html },
     };
 }

@@ -12,7 +12,7 @@ const INITIAL_STATE = {
     content: {
         html: '',
         css: '',
-        htmlPrepared: '',
+        pages: [],
     },
     status: {
         loading: false,
@@ -53,8 +53,9 @@ export default function reader(state = INITIAL_STATE, action) {
                 break;
             }
 
-            case '@reader/SET_HTML_PREPARED_SUCCESS': {
-                draft.content.htmlPrepared = action.payload.html;
+            case '@reader/SET_PAGES_SUCCESS': {
+                const pages = { html: action.payload.html };
+                draft.content.pages.push(pages);
                 break;
             }
 
@@ -62,7 +63,6 @@ export default function reader(state = INITIAL_STATE, action) {
                 draft.status.loading = false;
                 draft.status.error = true;
                 draft.status.errorMessage = action.payload.errorMessage;
-                draft.status.success = false;
                 break;
             }
 
