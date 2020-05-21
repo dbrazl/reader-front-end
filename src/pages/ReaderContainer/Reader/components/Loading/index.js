@@ -22,9 +22,9 @@ const Index = ({ width, height }) => {
     }
 
     useEffect(() => {
-        interval = setInterval(selecIcon, 200);
+        interval = setInterval(selecIcon, 500);
 
-        return () => clearInterval(interval)
+        return () => clearInterval(interval);
     }, []);
 
     const viewProps = {

@@ -28,6 +28,9 @@ export default function reader(state = INITIAL_STATE, action) {
             case '@reader/OPEN_READER_REQUEST': {
                 const { publicationId, page } = action.payload;
                 draft.status.loading = true;
+                draft.status.error = false;
+                draft.status.errorMessage = '';
+                draft.status.success = false;
                 draft.book.publicationId = publicationId;
                 draft.book.page = page;
                 break;

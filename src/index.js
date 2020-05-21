@@ -13,14 +13,14 @@ import App from './App';
 export default function Index() {
     return (
         <Provider store={store}>
-            {/* <PersistGate persistor={persistor}> */}
-            <StatusBar
-                translucent
-                barStyle="dark-content"
-                backgroundColor="transparent"
-            />
-            <App />
-            {/* </PersistGate> */}
+            <PersistGate persistor={persistor}>
+                <StatusBar
+                    translucent
+                    barStyle="dark-content"
+                    backgroundColor="transparent"
+                />
+                <App />
+            </PersistGate>
         </Provider>
     );
 }

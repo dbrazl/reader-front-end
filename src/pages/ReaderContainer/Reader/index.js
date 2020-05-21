@@ -6,18 +6,21 @@ import View from './view';
 
 import { openReaderRequest } from '../../../store/modules/reader/actions';
 
-const Index = ({ navigation }) => {
+const Index = () => {
     const [width, setWidth] = useState(Dimensions.get('window').width);
     const [height, setHeight] = useState(Dimensions.get('window').height);
     const [loading, setLoading] = useState(false);
     const [html, setHtml] = useState('');
+    const [errorStatus, setErrorStatus] = useState({});
+
+    const { htmlPrepared } = useSelector(state => state.reader.content);
+    const { error, errorMessage } = useSelector(state => state.reader.status);
 
     const dispatch = useDispatch();
-    const { htmlPrepared } = useSelector(state => state.reader.content);
 
     useEffect(() => {
         const publicationId = 1,
-            page = 0;
+            page = 1;
         Dimensions.addEventListener('change', orientationChange);
         dispatch(openReaderRequest(publicationId, page));
 
@@ -26,9 +29,16 @@ const Index = ({ navigation }) => {
         };
     }, []);
 
-    useEffect(() => {
-        setHtml(htmlPrepared);
-    }, [htmlPrepared]);
+    useEffect(() => setHtml(htmlPrepared), [htmlPrepared]);
+
+    useEffect(
+        () =>
+            setErrorStatus({
+                error,
+                errorMessage,
+            }),
+        [error, errorMessage]
+    );
 
     function orientationChange(event) {
         const { width, height } = event.screen;
@@ -41,12 +51,17 @@ const Index = ({ navigation }) => {
     }
 
     const viewProps = {
-        navigation,
         html,
-        width,
-        height,
-        loading,
-        onLoad,
+        dimensions: {
+            width,
+            height,
+        },
+        status: {
+            loading,
+            errorStatus,
+            loading,
+            onLoad,
+        },
     };
 
     return <View viewProps={viewProps} />;

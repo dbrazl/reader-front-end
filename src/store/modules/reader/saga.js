@@ -1,14 +1,8 @@
 import { takeLatest, call, put, all, select } from 'redux-saga/effects';
 
-import api from '../../../services/api';
-
 import style from '../../../assets/styles/style';
-import {
-    download,
-    addStyleToHead,
-    addStyleToHTML,
-    addStyleToDocument,
-} from '../utils';
+
+import api from '../../../services/api';
 
 import {
     getPageRequest,
@@ -17,11 +11,17 @@ import {
     getCSSRequest,
     getHTMLSuccess,
     getCSSSuccess,
-    setHTMLPreparedRequest,
     setHTMLPreparedSuccess,
     openReaderFailure,
     openReaderSuccess,
 } from './actions';
+
+import { download, errorMessage, createReport } from '../utils/fetch';
+import {
+    addStyleToHead,
+    addStyleToHTML,
+    addStyleToDocument,
+} from '../utils/inject';
 
 export function* openReaderStart({ payload }) {
     const { publicationId, page } = payload;
@@ -38,7 +38,7 @@ export function* getPage({ payload }) {
         );
         yield put(getPageSuccess(response.data));
     } catch (error) {
-        yield put(openReaderFailure(error.errorMessage));
+        yield* errorHandler(error);
     }
 }
 
@@ -58,7 +58,7 @@ export function* getHTML({ payload }) {
         if (response.error) throw new Error(response);
         yield put(getHTMLSuccess(response.data));
     } catch (error) {
-        yield put(openReaderFailure(error.errorMessage));
+        yield* errorHandler(error);
     }
 }
 
@@ -76,15 +76,8 @@ export function* getCSS({ payload }) {
 
         yield put(getCSSSuccess(response.data));
     } catch (error) {
-        yield put(openReaderFailure(error.errorMessage));
+        yield* errorHandler(error);
     }
-}
-
-export function* openReaderEnd() {
-    const content = yield select(state => state.reader.content);
-    const { html, css } = content;
-
-    if (html && css) yield put(openReaderSuccess());
 }
 
 export function* setHTMLPrepared() {
@@ -111,6 +104,19 @@ export function* setHTMLPrepared() {
 
         yield put(setHTMLPreparedSuccess(htmlPrepared));
     }
+}
+
+export function* openReaderEnd() {
+    const content = yield select(state => state.reader.content);
+    const { html, css } = content;
+
+    if (html && css) yield put(openReaderSuccess());
+}
+
+export function* errorHandler(error) {
+    const message = errorMessage(error);
+    yield* createReport(error, message);
+    yield put(openReaderFailure(message));
 }
 
 export default all([

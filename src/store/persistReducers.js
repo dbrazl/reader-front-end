@@ -6,7 +6,7 @@ export default reducers => {
         {
             key: 'reader',
             storage,
-            whitelist: [],
+            whitelist: ['log'],
         },
         reducers
     );
